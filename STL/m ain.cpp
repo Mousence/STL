@@ -34,8 +34,6 @@ int main()
 	}
 	cout << endl;
 	vector_properties(vec);
-	vec.push_back(5);
-	vector_properties(vec);
 
 
 	int index;
@@ -44,17 +42,23 @@ int main()
 	cout << "Data - "; cin >> data;
 	//vec.insert(vec.begin() + index, data);
 	vector_insert(vec, index, data);
-	for (int i = 0; i < vec.size(); i++) {
-		cout << vec[i] << tab;
+	try {
+		for (int i = 0; i < vec.size(); i++) {
+			cout << vec.at(i) << tab;
+			//cout << vec[i] << tab;
+		}
+	}
+	catch (const std::exception& e) {
+		std::cerr << e.what();
 	}
 	vector_properties(vec);
 
 	cout << "Index - "; cin >> index;
 	//vec.insert(vec.begin() + index, data);
 	vector_erase(vec, index);
-	for (int i = 0; i < vec.size(); i++) {
-		cout << vec[i] << tab;
-	}
+		for (int i = 0; i < vec.size(); i++) {
+			cout << vec[i] << tab;
+		}
 	vector_properties(vec);
 
 
