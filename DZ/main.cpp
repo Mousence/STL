@@ -1,7 +1,13 @@
-#define _CRT_SECURE_NO_WARNINGS
+Ôªø#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include <fstream>
+#include <windows.h>
+#include <string>
+#include <sstream>
+#include <conio.h>
+#include <ctype.h>
 #include <ostream>
+#include <string>
 #include <time.h>
 #include <ctime>
 #include <vector>
@@ -13,59 +19,69 @@ using std::cout;
 
 #define tab "\t"
 #define delimiter "/n----------------------------------------------------------/n"
+
+#define Esc 27
 const std::map<int, std::string> VIOLATIONS =
 {
-	{0, "ÕÂ ÓÔÂ‰ÂÎÂÌÓ"},
-	{1, "œÂ‚˚¯ÂÌËÂ ÒÍÓÓÒÚË"},
-	{2, "œ‡ÍÓ‚Í‡ ‚ ÌÂÔÓÎÓÊÂÌÌÓÏ ÏÂÒÚÂ"},
-	{3, "œÓÂÁ‰ Ì‡ Í‡ÒÌ˚È"},
-	{4, "≈Á‰‡ ‚ ÌÂÚÂÁ‚ÓÏ ÒÓÒÚÓˇÌËË"},
-	{5, "ŒÒÍÓ·ÎÂÌËÂ ÓÙËˆÂ‡"},
-	{6, "ÕÂÔÓ‰˜ËÌÂÌËÂ ÔËÍ‡Á‡Ï ÓÙËˆÂ‡"},
-	{7, "œÂÂÒÂ˜ÂÌËÂ ÒÔÎÓ¯ÌÓÈ"},
-	{8, "ŒÒÚ‡‚ÎÂÌËÂ ÏÂÒÚ‡ ƒ“œ"},
-	{9, "–ÂÏÂÌ¸ ·ÂÁÓÔ‡ÒÌÓÒÚË"}
+	{0, "–ù–µ –æ–ø—Ä–µ–¥–µ–ª–µ–Ω–æ"},
+	{1, "–ü—Ä–µ–≤—ã—à–µ–Ω–∏–µ —Å–∫–æ—Ä–æ—Å—Ç–∏"},
+	{2, "–ü–∞—Ä–∫–æ–≤–∫–∞ –≤ –Ω–µ–ø–æ–ª–æ–∂–µ–Ω–Ω–æ–º –º–µ—Å—Ç–µ"},
+	{3, "–ü—Ä–æ–µ–∑–¥ –Ω–∞ –∫—Ä–∞—Å–Ω—ã–π"},
+	{4, "–ï–∑–¥–∞ –≤ –Ω–µ—Ç—Ä–µ–∑–≤–æ–º —Å–æ—Å—Ç–æ—è–Ω–∏–∏"},
+	{5, "–û—Å–∫–æ—Ä–±–ª–µ–Ω–∏–µ –æ—Ñ–∏—Ü–µ—Ä–∞"},
+	{6, "–ù–µ–ø–æ–¥—á–∏–Ω–µ–Ω–∏–µ –ø—Ä–∏–∫–∞–∑–∞–º –æ—Ñ–∏—Ü–µ—Ä–∞"},
+	{7, "–ü–µ—Ä–µ—Å–µ—á–µ–Ω–∏–µ —Å–ø–ª–æ—à–Ω–æ–π"},
+	{8, "–û—Å—Ç–∞–≤–ª–µ–Ω–∏–µ –º–µ—Å—Ç–∞ –î–¢–ü"},
+	{9, "–†–µ–º–µ–Ω—å –±–µ–∑–æ–ø–∞—Å–Ω–æ—Å—Ç–∏"}
 };
 
 class Crime
 {
-	int id;            //ÕÓÏÂ ÒÚ‡Ú¸Ë
+	int id;
 	std::string place;
-	time_t time;       //¬ÂÏˇ Ì‡Û¯ÂÌËˇ
-
-protected:
-	int size = 0;
+	time_t time;
 public:
-	int get_id()const {
+	int get_id()const
+	{
 		return id;
 	}
-	const std::string get_violation()const {
+	const std::string get_vilation()const
+	{
 		return VIOLATIONS.at(id);
 	}
-	std::string get_place()const {
+	const std::string& get_place()const
+	{
 		return place;
 	}
-	const char* get_time()const {
+	const char* get_time()const
+	{
 		return ctime(&time);
 	}
-	time_t get_timestamp() const {
+	time_t get_timestamp()const
+	{
 		return time;
 	}
-
-	void set_id(int id) {
+	void set_id(int id)
+	{
 		if (id >= VIOLATIONS.size())id = 0;
 		this->id = id;
 	}
-	void set_place(std::string place) {
+	void set_place(const std::string& place)
+	{
 		this->place = place;
 	}
-	void set_time(const char time_str[]) {
+	void set_time(time_t time)
+	{
+		this->time = time;
+	}
+	void set_time(const char time_str[])
+	{
 		const int SIZE = 20;
 		char time_str_buffer[SIZE] = {};
 		strcpy(time_str_buffer, time_str);
-		//HH:MM DD/MM/YYYY
-		//HH:MM DD/MM/YYYY
-		//YYYY/MM/DD HH:MM
+		//hh:mm DD/MM/YYYY
+		//hh:mm DD.MM.YYYY
+		//YYYY/MM/DD hh:mm
 		int units[5] = {};
 		char* sz_units[5] = {};
 		const char delimiters[] = ":./ ";
@@ -75,86 +91,298 @@ public:
 		//for (int i : units)cout << i << tab; cout << endl;
 		//for (char* i : sz_units)cout << i << tab; cout << endl;
 		int colon_position = strchr(time_str, ':') - time_str;
-		if (colon_position > 2) {
+		if (colon_position > 2)
+		{
 			std::reverse(units, units + 5);
 			std::swap(units[0], units[1]);
 		}
 		//for (int i : units)cout << i << tab; cout << endl;
-
+		//for (char* i : sz_units)cout << i << tab; cout << endl;
 		std::tm tm{};
-		tm.tm_hour=units[0];
-		tm.tm_min=units[1];
-		tm.tm_mday=units[2];
-		tm.tm_mon=units[3] - 1;
-		tm.tm_year=units[4] - 1900;
+		tm.tm_hour = units[0];
+		tm.tm_min = units[1];
+		tm.tm_mday = units[2];
+		tm.tm_mon = units[3] - 1;
+		tm.tm_year = units[4] - 1900;
 		this->time = std::mktime(&tm);
 	}
 
-	Crime() : id(0), place(""), time(0) {}
-	Crime(int id, const std::string& place, const std::string& time) {
-			set_id(id);
-			set_place(place);
-			set_time(time.c_str()); // ËÁ ÏÂÚÓ‰‡ ÔÓÎÛ˜ËÚ¸ ÒÚÓÍÛ
+	Crime()
+	{
+		id = 0;
+		place = "undefined";
+		time = 0;
+	}
+	Crime(int id, const std::string& place, const std::string& time)
+	{
+		set_id(id);
+		set_place(place);
+		set_time(time.c_str());
+	}
+	Crime(int id, const std::string& place, const std::time_t time)
+	{
+		set_id(id);
+		set_place(place);
+		set_time(time);
 	}
 	~Crime() {}
-
 };
-
-void PrintCrimes(std::map<string, std::vector<Crime>> CrimeMap) {
-	for (std::map<string, std::vector<Crime>>::iterator it = CrimeMap.begin(); it != CrimeMap.end(); ++it) {
-		cout << it->first << tab << it->second << endl;
-	}
-}
-void PrintIDCrimes(std::string ID, std::map<string, std::vector<Crime>> CrimeMap) {
-	if (CrimeMap.find(ID) != CrimeMap.end()) {
-		std::vector<Crime> crimes = CrimeMap[ID];
-		std::cout << "œÂÒÚÛÔÎÂÌËˇ " << ID << ": ";
-		for (int i = 0; i < CrimeMap[ID].size(); i++) {
-			cout << crimes[i] << endl;
-		}
-	}
-	else {
-		std::cout << "œÂÒÚÛÔÎÂÌËÂ Ò ÌÓÏÂÓÏ " << ID << " ÌÂ Ì‡È‰ÂÌÓ." << std::endl;
-	}
-}
-void Write(std::map<string, std::vector<Crime>> CrimeMap, std::string FileName) {
-	std::ofstream fout;
-	fout.open(FileName, std::ios_base::app);
-	for (std::map<string, std::vector<Crime>>::iterator it = CrimeMap.begin(); it != CrimeMap.end(); ++it) {
-		fout << it->first << tab << it->second << endl;
-	}
-	fout.close();
-}
-void Load(std::map<string, std::vector<Crime>> CrimeMap, std::string FileName) {
-
-}
-
-std::ostream& operator<<(std::ostream& os, const Crime& obj) {
+std::ostream& operator<<(std::ostream& os, const Crime& obj)
+{
 	const int SIZE = 32;
 	char crime_time[SIZE]{};
 	strcpy(crime_time, obj.get_time());
 	crime_time[strlen(crime_time) - 1] = 0;
-	return os << obj.get_time() << ": " << obj.get_place() << ", " << obj.get_violation();
+	return os << crime_time << ": " << obj.get_place() << ", " << obj.get_vilation();
 }
-std::ostream& operator<<(std::ostream& os, const std::vector<Crime>& crimes) {
-	for (const Crime& crime : crimes) {
-		os << crime << std::endl;
+std::ofstream& operator<<(std::ofstream& ofs, const Crime& obj)
+{
+	ofs << obj.get_timestamp() << " " << obj.get_place() << " " << obj.get_id();
+	return ofs;
+}
+
+class LicencePlate
+{
+	std::string plate;
+public:
+	const std::string& get_plate()const
+	{
+		return plate;
 	}
-	return os;
+	void set_plate(const std::string& plate)
+	{
+		if (plate.size() < 10)this->plate = plate;
+		else this->plate = "BadFormat";
+	}
+	LicencePlate() {}
+	LicencePlate(const std::string& plate)
+	{
+		set_plate(plate);
+	}
+	~LicencePlate() {}
+
+	bool operator<(const LicencePlate& other)const
+	{
+		return this->plate < other.plate;
+	}
+	bool operator>(const LicencePlate& other)const
+	{
+		return this->plate > other.plate;
+	}
+
+};
+std::istream& operator>>(std::istream& is, LicencePlate& obj) {
+	std::string plate;
+	is >> plate;
+	obj.set_plate(plate);
+	return is;
 }
+std::ostream& operator<<(std::ostream& os, const LicencePlate& obj)
+{
+	return os << obj.get_plate();
+}
+std::ifstream& getline(std::ifstream& ifs, LicencePlate& obj, char delim)
+{
+	std::string plate;
+	std::getline(ifs, plate, delim);
+	obj.set_plate(plate);
+	return ifs;
+}
+
+void print(const std::map<LicencePlate, std::list<Crime>>& base);
+void print(const std::map<LicencePlate, std::list<Crime>>& base, LicencePlate& plate);
+void print(const std::map<LicencePlate, std::list<Crime>>& base, LicencePlate& start_plate, LicencePlate& end_plate);
+void save(const std::map<LicencePlate, std::list<Crime>>& base, const std::string& filename);
+std::map<LicencePlate, std::list<Crime>> load(const std::string& filename);
 
 void main()
 {
-	setlocale(LC_ALL, "");
+	setlocale(LC_ALL, "ru");
+	/*Crime crime;
+	crime.set_time("16:20 24/10/2023");
+	cout << delimiter << endl;
+	crime.set_time("2023/10/24 4:20");
 
-	std::string ID = "54LSD44";
+	Crime crime(1, "√≥√´. √ã√•√≠√®√≠√†", "16:20 24/10/2023");
+	cout << crime << endl;
 
-	std::vector<Crime> CrimeList = {};
-	std::map<string, std::vector<Crime>> CrimeMap;
+	LicencePlate plate("m777ab");	cout << plate << endl;
+	LicencePlate plate_1("VasyaTupenko");	cout << plate_1 << endl;
 
-	Crime NewCrime(1, "ÛÎ. ÀÂÌËÌ‡", "16:20 24/10/2023");
-	CrimeList.push_back(NewCrime);
-	CrimeMap[ID] = CrimeList;
+	std::map<LicencePlate, std::list<Crime>> base =
+	{
+		{LicencePlate("m777ab"), {Crime(1, "—É–ª. –õ–µ–Ω–∏–Ω–∞ 2", "12:20 18.05.2023"), Crime(3, "—É–ª. –õ–µ–Ω–∏–Ω–∞ 2", "12:20 18.05.2023")}},
+		{LicencePlate("m001bb"), {Crime(4, "—É–ª. –ö–æ—Å–º–æ–Ω–∞–≤—Ç–æ–≤ 6", "22:20 20.10.2023"), Crime(4, "—É–ª. –ö–æ—Å–º–æ–Ω–∞–≤—Ç–æ–≤ 8", "22:30 18.05.2023"), Crime(6, "—É–ª. –ö–æ—Å–º–æ–Ω–∞–≤—Ç–æ–≤ 9", "22:33 18.05.2023")}},
+		{LicencePlate("a121bc"), {Crime(2, "—É–ª. –ü—É—à–∫–∏–Ω–∞", "14:25 22.10.2023"), Crime(9, "—É–ª. –ü—É—à–∫–∏–Ω–∞", "14:25 22.10.2023")}},
+	};
+	print(base);
+	save(base, "base.txt");*/
+	std::map<LicencePlate, std::list<Crime>> base = load("base.txt");
+	print(base);
 
-	PrintIDCrimes(ID, CrimeMap);
+	/*LicencePlate plate;
+	cout << "–í–≤–µ–¥–∏—Ç–µ –Ω–æ–º–µ—Ä: "; cin >> plate;
+	print(base, plate);
+	*/
+	/*LicencePlate start_plate, end_plate;
+	cout << "–í–≤–µ–¥–∏—Ç–µ –Ω–∞—á–∞–ª—å–Ω—ã–π –Ω–æ–º–µ—Ä: "; cin >> start_plate;
+	cout << "–í–≤–µ–¥–∏—Ç–µ –∫–æ–Ω–µ—á–Ω—ã–π –Ω–æ–º–µ—Ä: "; cin >> end_plate;
+	print(base, start_plate, end_plate);*/
+
+	char key;
+	do
+	{
+		system("CLS");
+		cout << "1. –í—ã–≤–æ–¥ –≤—Å–µ–π –±–∞–∑—ã;" << endl;
+		cout << "2. –í—ã–≤–æ–¥ –∏–Ω—Ñ–æ—Ä–º–∞—Ü–∏–∏ –ø–æ –Ω–æ–º–µ—Ä—É;" << endl;
+		cout << "3. –í—ã–≤–æ–¥ –∏–Ω—Ñ–æ—Ä–º–∞—Ü–∏–∏ –ø–æ –¥–∏–∞–ø–∞–∑–æ–Ω—É –Ω–æ–º–µ—Ä–æ–≤;" << endl;
+		cout << "4. –î–æ–±–∞–≤–∏—Ç—å –Ω–∞—Ä—É—à–µ–Ω–∏–µ;" << endl;
+		cout << "5. –°–æ—Ö—Ä–∞–Ω–∏—Ç—å –±–∞–∑—É –≤ —Ñ–∞–π–ª;" << endl;
+		cout << "6. –ó–∞–≥—Ä—É–∑–∏—Ç—å –±–∞–∑—É –∏–∑ —Ñ–∞–π–ª–∞;" << endl;
+
+		key = _getch();
+		switch (key)
+		{
+		case '1': print(base); break;
+		case '2': {
+			LicencePlate plate;
+			cout << "–í–≤–µ–¥–∏—Ç–µ –Ω–æ–º–µ—Ä: "; cin >> plate;
+			print(base, plate);
+			break;
+		}
+		case '3': {
+			LicencePlate start_plate;
+			LicencePlate end_plate;
+			cout << "–í–≤–µ–¥–∏—Ç–µ –Ω–∞—á–∞–ª—å–Ω—ã–π –Ω–æ–º–µ—Ä: "; cin >> start_plate;
+			cout << "–í–≤–µ–¥–∏—Ç–µ –∫–æ–Ω–µ—á–Ω—ã–π –Ω–æ–º–µ—Ä: "; cin >> end_plate;
+			print(base, start_plate, end_plate);
+			break;
+		}
+		case '4': {
+			LicencePlate plate;
+			std::string place;
+			int id;
+			cout << "–í–≤–µ–¥–∏—Ç–µ –Ω–æ–º–µ—Ä: "; cin >> plate; 
+			cin.clear();
+			cin.ignore();
+			cout << "–í–≤–µ–¥–∏—Ç–µ –º–µ—Å—Ç–æ –Ω–∞—Ä—É—à–µ–Ω–∏—è";
+			SetConsoleCP(1251);
+			std::getline(cin, place);
+			SetConsoleCP(866);
+			cout << "–í–≤–µ–¥–∏—Ç–µ –Ω–∞—Ä—É—à–µ–Ω–∏–µ: ";
+
+			for (const auto& violation : VIOLATIONS) {
+				cout << violation.first << tab << violation.second << endl;
+			}
+			cin >> id;
+			Crime crime(id, place, time(NULL));
+			base[plate].push_back(crime);
+
+			cout << plate << ":\n";
+			for (Crime i : base[plate]) cout << i << ";\n";
+			break;
+		}
+		case '5':
+			save(base, "base.txt"); break;
+		case '6':
+			load("base.txt"); break;
+		default:
+			break;
+		}
+		system("PAUSE");
+	} while (key != Esc);
+	/*system("PAUSE");
+	system("CLS");
+	main();*/
+}
+
+void print(const std::map<LicencePlate, std::list<Crime>>& base)
+{
+	cout << "Base size: " << base.size() << endl;
+	for (std::map<LicencePlate, std::list<Crime>>::const_iterator bit = base.begin(); bit != base.end(); ++bit)
+	{
+		cout << bit->first << ":\n";
+		for (std::list<Crime>::const_iterator it = bit->second.begin(); it != bit->second.end(); ++it)
+		{
+			cout << tab << *it << ";\n";
+		}
+		cout << endl;
+	}
+}
+void print(const std::map<LicencePlate, std::list<Crime>>& base, LicencePlate& plate) {
+	try
+	{
+		cout << "Plate: " << plate << " violations:\n";
+		for (std::list<Crime>::const_iterator it = base.at(plate).cbegin(); it != base.at(plate).cend(); ++it) {
+			cout << tab << *it << ";\n";
+		}
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "–í –±–∞–∑–µ –Ω–µ—Ç —Ç–∞–∫–æ–≥–æ –Ω–æ–º–µ—Ä–∞ :->" << endl;
+	}
+}
+void print(const std::map<LicencePlate, std::list<Crime>>& base, LicencePlate& start_plate, LicencePlate& end_plate) {
+	for (std::map<LicencePlate, std::list<Crime>>::const_iterator bit = base.lower_bound(start_plate); bit != base.upper_bound(end_plate); ++bit) {
+		cout << bit->first << ";\n";
+		for (std::list<Crime>::const_iterator it = bit->second.begin(); it != bit->second.end(); ++it) {
+			cout << tab << *it << ";\n";
+		}
+		cout << endl;
+	}
+}
+void save(const std::map<LicencePlate, std::list<Crime>>& base, const std::string& filename)
+{
+	std::ofstream fout(filename);
+	for (std::map<LicencePlate, std::list<Crime>>::const_iterator bit = base.begin(); bit != base.end(); ++bit)
+	{
+		fout << bit->first << ":";
+		for (std::list<Crime>::const_iterator it = bit->second.begin(); it != bit->second.end(); ++it)
+		{
+			fout << *it << ", ";
+		}
+		int position = fout.tellp();
+		fout.seekp(position - 2);
+		fout << ";\n";
+	}
+	fout.close();
+	std::string command = "start notepad " + filename;
+	system(command.c_str());
+}
+std::map<LicencePlate, std::list<Crime>> load(const std::string& filename)
+{
+	std::map<LicencePlate, std::list<Crime>> base;
+	std::ifstream fin(filename);
+	if (fin.is_open())
+	{
+		while (!fin.eof())
+		{
+			LicencePlate plate;
+			getline(fin, plate, ':');
+			std::string all_crimes;
+			std::getline(fin, all_crimes);
+			//cout << plate << tab << all_crimes << endl;
+			char* all_crimes_buffer = new char[all_crimes.size() + 1] {};
+			strcpy(all_crimes_buffer, all_crimes.c_str());
+			char delimiters[] = ":,;";
+			for (char* pch = strtok(all_crimes_buffer, delimiters); pch; pch = strtok(NULL, delimiters))
+			{
+				Crime crime;
+				crime.set_time(atoi(pch));
+				crime.set_id(atoi(strrchr(pch, ' ') + 1));
+				while (pch[0] == ' ') pch = strchr(pch, ' ') + 1;
+				pch = strchr(pch, ' ') + 1;
+				*strrchr(pch, ' ') = 0;
+				crime.set_place(pch);
+				base[plate].push_back(crime);
+			}
+			delete[] all_crimes_buffer;
+		}
+		fin.close();
+	}
+	else
+	{
+		std::cerr << "Error: File not found" << endl;
+	}
+	return base;
 }
